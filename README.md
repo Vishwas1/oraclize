@@ -7,10 +7,10 @@ I am going to divide this topic in couple of blogs. So that reader will get comp
 
 ### Overview:
 
-As we know the problem with EVM -  Ethereum Virtual Machine is, it is difficult to perform complex problems on EVM due to its limitation. One of the limitation of EVM is, having its own set of opcodes and higher level languages (Solidity, Serpent, LLL, …) there is no direct access to advanced libraries which many complex applications would need to use. For example in financial system, the application may needs to use financial libraries, data and algorithms to perform some complex operations. Due to inability of smart contracts to talk to outside world (fetch data off chain), this leads to a very serious problem. And even if we try to perform, we end up spending a lot of ‘Gas’. The more complexity our smart contract has to handle, the more ‘Gas’ we will end up spending. 
+As we know the problem with EVM -  Ethereum Virtual Machine is, it is difficult to perform complex problems on EVM due to its limitation. One of the limitation of EVM is, having its own set of opcodes, there is no direct access to advanced libraries which many complex applications would need to use. For example in financial system, the application may needs to use financial libraries, data and algorithms to perform some complex operations. Due to inability of smart contracts to talk to outside world (fetch data off chain), this leads to a very serious problem. And even if we try to perform, we end up spending a lot of ‘Gas’. The more complexity our smart contract has to handle, the more ‘Gas’ we will end up spending. 
 
 
-So, it might be useful to be able to perform certain type of computation off chain and then simply relay the result back onto the blockchain. Infact smart contracts may needs reliable data from outside, based on that it can perform certain task. For example, an insurance contract, that says I will send your 30% of fare back, if flight is delayed by 30 mins. And to send back 30% of fare, the contracts needs to know from reliable source that whether the flight is delayed or not.
+So, it might be useful to be able to perform certain type of computation off chain and then simply relay the result back onto the blockchain. Infact smart contracts may needs reliable data from outside, based on that it can perform certain task. For example, an insurance contract, that says the flight company will refund 30% of fare, if flight is delayed by 30 mins. And to refund 30% of fare to the customer, the contracts needs to know from reliable source that whether the flight is delayed or not. 
 
 This is where the use of Oracles are. Oraclize is one of the company that provides oracles services.
 
@@ -20,12 +20,12 @@ If our contracts needs data from outside world -
 
 1. First of all our contract needs to inherit *usingOraclize* contract (assuming that we have imported oraclizeAPI.sol in our contract). E.g.  `contract ExampleContract is usingOraclize`.
 2. Now our ExampleContract will trigger the oracle service with certain parameters like, data source type (e.g url, ipfs, wolframalpha etc), query (an array of parameters which need to evaluated in order to complete a specific data source type request) and optionally authenticity proof. E.g.  `oraclize_query("URL", "json(https://api.fixer.io/latest?symbols=USD,INR).rates.INR")`.
-3. The oracle service will be responsible for outside world getting data in a *reliable way* (I will come to this later). 
-4. Once oracle service has the reliable data from outside world, it will call a callback function in the smart contract to send this data. The callback function looks something like this : `__callback(bytes32 myid, string result)`.
+3. The oracle service will be responsible getting data form outside world in a **reliable way** (I will come to this later). 
+4. Once oracle service has the reliable data from outside world, it will call a callback function in the smart contract to send this data. The callback function looks something like this : `function __callback(bytes32 myid, string result)`.
 
 **Note** : 
 
--  Now this will happen in sometime in future. So it's very possible that the contact call that oracle service makes into the our smart contract to send data back, is mined in different block than the initial contract call that smart contract performed to trigger the oracle service.
+-  Now this will happen in sometime in future. So it's very possible, the contract callback call that oracle service makes in our smart contract to send data back, is mined in different block than the initial contract call that smart contract performed to trigger the oracle service.
 -  One of the oracle service providers is **Oraclize**
 
 As per [Oraclize documentation](http://docs.oraclize.it/#home) - 
@@ -68,6 +68,8 @@ That’s all for this blog. In the next blog we will have two objectives :
 References: 
 - [Oraclize Doc](http://docs.oraclize.it/#background)
 - [TLSNotary WhitePaper](https://tlsnotary.org/TLSNotary.pdf)
+- [Very helpful youtube video](https://www.youtube.com/watch?v=04WiDy_Of2A)
+- [How oraclize handles TLSNotary](https://ethereum.stackexchange.com/questions/201/how-does-oraclize-handle-the-tlsnotary-secret)
  
 
 
